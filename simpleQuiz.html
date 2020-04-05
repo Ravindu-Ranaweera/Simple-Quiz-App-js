@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+	<title>Document</title>
+</head>
+<style>
+	body{
+		background-color: #ccc;
+	}
+	.container{
+		margin: 50px 300px;
+		border: 10px solid #000066;
+		padding: 20px;
+		background-color: #fff;
+	}
+	input{
+		width: 100%;
+		margin: 20px 0;
+		padding: 10px 0;
+		border: 2px solid #555555;
+		font-size: 16px;
+	}
+	label{
+		font-size: 20px;
+		font-weight: bold;
+	}
+	input:focus {
+  		border: 2px solid dodgerblue;
+	}
+	button	{
+		margin: 0 10px;
+		width: 10%;
+		padding: 5px 6px;
+		border: 2px solid #0080ff;
+		text-align: center;
+ 		text-decoration: none;
+		border-radius: 10px;
+		font-size: 17px;
+		color: black ;
+		font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;	
+	}
+	button:hover{
+		background:  #0080ff;
+		color: white;
+	}
+	#result-quiz{
+		margin: 10px 200px;
+		border: 5px solid #555555;
+		padding: 20px;
+		background-color: #fff;
+		/*display: none;*/
+	}
+	.fa-check{
+		color: green;
+	}
+	.fa-times{
+		color: red;
+	}
+	.alert{
+		font-size: 16px;
+		width: 100%;
+		padding: 8px 10px;
+		margin: 8px 0;
+		display: inline-block;
+		border-radius: 4px;
+		box-sizing: border-box;
+		color: white;
+	}
+</style>
+
+<body>
+	<div class="container">
+		<form action="" id="quiz-form">
+			<label for="" id="quiz" class="maths-seq"></label>
+			<input type="number" class="ans-box" id="answer" placeholder="Enter your answer">
+		</form>
+		<button id="btnSubmit" type="submit">Submit</button>
+		<button class="delete" id="btnCansel" type="submit">Cansel</button>
+	</div>
+	<div id="result-quiz"></div>
+
+<script type="text/javascript">
+	const show2= document.querySelector('#result-quiz');
+				show2.style.visibility = 'hidden';
+	var quizCounter=0;
+	
+		const storedQuiz=[
+		{	question: '5+6'   ,correctAnswer: 11 },
+		{	question: '5*6'   ,correctAnswer: 30 },
+		{	question: '5+16'  ,correctAnswer: 21},
+		{	question: '23-8'  ,correctAnswer: 15 },
+		{	question: '30/10' ,correctAnswer: 3 },
+		{	question: '25+4'  ,correctAnswer: 29 },
+		{	question: '1+6'   ,correctAnswer: 7 },
+		{	question: '4*8'   ,correctAnswer: 32 },
+		{	question: '5^2'   ,correctAnswer: 25 },
+		{	question: '56-3'  ,correctAnswer: 53 },
+		{	question: ''  ,correctAnswer: '' }
+		];
+	class UI{
+		static result(num){
+			const answer=document.querySelector('#answer').value;
+			const list= document.getElementById('result-quiz');
+			const row= document.createElement('div');
+			row.id=`result`;
+			console.log(row);
+			if (num===1) {
+				row.innerHTML =`<p>${storedQuiz[quizCounter].question} = ${answer} <i class="fa fa-check icon" aria-hidden="true"></i></p>`;
+			}else{
+				row.innerHTML =`<p>${storedQuiz[quizCounter].question} = ${answer} <i class="fa fa-times icon" aria-hidden="true"> Correct Answer is ${storedQuiz[quizCounter].correctAnswer}</i></p>`;
+			}
+			list.appendChild(row);
+		}
+		static deleteFields(el){
+					if (el.classList.contains('delete')) {
+						var element = document.getElementById('result');
+						element.parentNode.removeChild(element); 
+					}
+			}
+
+		static displayQuiz(){
+			const quiz=document.querySelector('#quiz');
+			quiz.textContent= storedQuiz[quizCounter].question;
+			console.log('fxfx');
+		}
+
+		static clearFields(){
+			document.querySelector('#answer').value = '';
+		}
+		
+		static showAlert(massage){
+				const div =document.createElement('div');
+				div.className=`alert`;
+				div.style.backgroundColor= '#ff1a1a';
+				div.appendChild(document.createTextNode(massage));
+				const container= document.querySelector('.container');
+				const form = document.querySelector('#quiz-form');
+				container.insertBefore(div,form);
+
+				setTimeout(()=> document.querySelector('.alert').remove(),2000);
+		}
+		
+		static checkAnswer(n){
+			var correctAns = storedQuiz[quizCounter].correctAnswer;
+			
+			console.log(correctAns);
+			if(correctAns==n){
+				UI.result(1);
+				console.log('true');
+			}else{
+				UI.result(0);
+				console.log('false');
+			}
+			
+			if (quizCounter===9) {
+				const show1= document.querySelector('.container');
+				show1.style.display = 'none'; 
+				
+				const show2= document.querySelector('#result-quiz');
+				show2.style.visibility = 'visible'; 
+			}else{
+				 
+			}
+			quizCounter++;
+		}
+	}
+
+		document.addEventListener('DOMContentLoaded',UI.displayQuiz());
+		
+		document.getElementById('btnSubmit').addEventListener('click',function(e)
+			{
+				e.preventDefault();
+				console.log(e.target);
+				const answer=document.querySelector('#answer').value;
+				console.log(answer);
+				if (answer=== '') {
+					UI.showAlert('Pleace, Fill All The Fields');
+				}else{
+					UI.checkAnswer(answer);
+					UI.clearFields();
+					UI.displayQuiz();
+				}
+			 });
+
+		document.getElementById('btnCansel').addEventListener('click',function(e)
+		{		e.preventDefault();
+				alert("Are You To Sure To Exit");
+				UI.deleteFields(e.target);
+				quizCounter=0;
+				UI.displayQuiz();
+
+
+		});
+
+</script>
+		
+	
+</body>
+</html>
